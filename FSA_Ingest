@@ -1,0 +1,30 @@
+##Ingest API data using pandas in Fabric
+
+import requests
+import pandas as pd
+
+# Define the API URL
+api_url = "https://api1-ratings.food.gov.uk/search-name/en-gb/cafe/2/json"
+
+# Define the headers, including the API key if necessary
+headers = {
+    'x-api-version': '2',
+    'Content-Type': 'application/json'
+}
+
+# Make the API request
+response = requests.get(api_url, headers=headers)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Parse the JSON response
+    data = response.json()
+    
+    # Normalize the JSON data into a flat table
+    df = pd.json_normalize(data['FHRSEstablishment']['EstablishmentCollection']['EstablishmentDetail'])
+    
+    # Display the DataFrame
+    print(df)
+else:
+    print(f"Failed to retrieve data: {response.status_code}")
+
